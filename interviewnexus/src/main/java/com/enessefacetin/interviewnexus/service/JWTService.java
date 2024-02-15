@@ -1,4 +1,4 @@
-package com.enessefacetin.interviewnexus.config;
+package com.enessefacetin.interviewnexus.service;
 
 import java.security.Key;
 import java.util.Date;

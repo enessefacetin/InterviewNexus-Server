@@ -1,5 +1,6 @@
-package com.enessefacetin.interviewnexus.auth;
+package com.enessefacetin.interviewnexus.model.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class InsertIndustryRequest {
+    @NotBlank
     private String name;
-    private String email;
-    private String password;
 }

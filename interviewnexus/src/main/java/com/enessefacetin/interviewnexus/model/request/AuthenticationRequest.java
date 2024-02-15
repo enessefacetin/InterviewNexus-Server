@@ -1,4 +1,4 @@
-package com.enessefacetin.interviewnexus.auth;
+package com.enessefacetin.interviewnexus.model.request;
 
 
 import lombok.AllArgsConstructor;

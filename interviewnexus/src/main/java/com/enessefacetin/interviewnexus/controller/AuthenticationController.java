@@ -1,6 +1,11 @@
-package com.enessefacetin.interviewnexus.auth;
+package com.enessefacetin.interviewnexus.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import com.enessefacetin.interviewnexus.model.request.AuthenticationRequest;
+import com.enessefacetin.interviewnexus.model.request.RegisterRequest;
+import com.enessefacetin.interviewnexus.model.response.AuthenticationResponse;
+import com.enessefacetin.interviewnexus.service.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
 

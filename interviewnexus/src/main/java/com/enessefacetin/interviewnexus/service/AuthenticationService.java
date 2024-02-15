@@ -1,14 +1,16 @@
-package com.enessefacetin.interviewnexus.auth;
+package com.enessefacetin.interviewnexus.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.enessefacetin.interviewnexus.config.JWTService;
-import com.enessefacetin.interviewnexus.user.Role;
-import com.enessefacetin.interviewnexus.user.User;
-import com.enessefacetin.interviewnexus.user.UserRepository;
+import com.enessefacetin.interviewnexus.model.entity.Role;
+import com.enessefacetin.interviewnexus.model.entity.User;
+import com.enessefacetin.interviewnexus.model.request.AuthenticationRequest;
+import com.enessefacetin.interviewnexus.model.request.RegisterRequest;
+import com.enessefacetin.interviewnexus.model.response.AuthenticationResponse;
+import com.enessefacetin.interviewnexus.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

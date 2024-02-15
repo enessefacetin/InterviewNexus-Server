@@ -3,6 +3,14 @@ spring:
     url: jdbc:oracle:thin:@localhost:1521:FREE
     username: c##interviewnexus
     password: InterviewNexus2024
+    driver-class-name: oracle.jdbc.OracleDriver
+
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 2000000
+      connection-timeout: 30000
   jpa:
     hibernate:
       ddl-auto: update
@@ -12,3 +20,5 @@ spring:
         format_sql: true
     open-in-view: false
     database: oracle
+    database-platform: org.hibernate.dialect.OracleDialect
+
