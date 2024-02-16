@@ -22,3 +22,22 @@ spring:
     database: oracle
     database-platform: org.hibernate.dialect.OracleDialect
 
+logging:
+  level:
+    root: WARN
+    com:
+      interviewnexus: DEBUG
+    org:
+      springframework:
+        web: INFO
+        boot: INFO
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(%highlight(%5p)) %clr(%-40.40logger{39}){cyan} %clr(%m%n){faint}"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  
+  file:
+    name: interviewnexus.log
+    path: logs
+    max-size: 10MB
+    max-history: 10
+    total-size-cap: 100MB
