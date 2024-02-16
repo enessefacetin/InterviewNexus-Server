@@ -1,6 +1,7 @@
 package com.enessefacetin.interviewnexus.model.entity;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,9 +15,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -32,13 +34,14 @@ public class Question extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status questionStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "interview_id", referencedColumnName = "id")
     private Interview interview;
 
 
     @PrePersist
     protected void onCreate() {
+        super.onCreate();
         this.questionStatus = Status.PENDING;
     }
 }

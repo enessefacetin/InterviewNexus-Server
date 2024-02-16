@@ -2,6 +2,7 @@ package com.enessefacetin.interviewnexus.model.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
@@ -10,9 +11,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,6 +24,6 @@ public class Industry extends BaseEntity {
 
     private String name;
 
-    @ManyToMany(mappedBy = "industries")
+    @ManyToMany(mappedBy = "industries", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Company> companies;
 }

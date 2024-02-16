@@ -15,9 +15,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -30,7 +31,7 @@ public class Company extends BaseEntity {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Interview> interviews;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "company_profession",
         joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
@@ -38,7 +39,7 @@ public class Company extends BaseEntity {
     )
     private List<Profession> professions;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "company_industry",
         joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),

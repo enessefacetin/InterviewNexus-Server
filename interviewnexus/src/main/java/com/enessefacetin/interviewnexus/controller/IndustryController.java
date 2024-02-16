@@ -8,6 +8,8 @@ import com.enessefacetin.interviewnexus.model.request.UpdateIndustryRequest;
 import com.enessefacetin.interviewnexus.model.response.IndustryResponse;
 import com.enessefacetin.interviewnexus.service.IndustryService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/api/v1/industry")
 @RequiredArgsConstructor
+@Tag(name = "Industry")
 public class IndustryController {
 
     private final IndustryService industryService;

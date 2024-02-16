@@ -2,25 +2,58 @@ package com.enessefacetin.interviewnexus.service;
 
 import org.springframework.stereotype.Service;
 
+import com.enessefacetin.interviewnexus.exception.EntityNotFoundException;
+import com.enessefacetin.interviewnexus.mapper.QuestionMapper;
+import com.enessefacetin.interviewnexus.model.entity.Question;
+import com.enessefacetin.interviewnexus.model.request.InsertQuestionRequest;
+import com.enessefacetin.interviewnexus.model.request.UpdateQuestionRequest;
+import com.enessefacetin.interviewnexus.model.response.QuestionResponse;
 import com.enessefacetin.interviewnexus.repository.QuestionRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final QuestionMapper questionMapper;
 
-    public void getAllQuestions() {
-        questionRepository.findAll();
+
+    public List<QuestionResponse> getAllQuestions() {
+        var industries = questionRepository.findAll();
+        return industries.stream()
+                .map(questionMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public void getQuestionById(Long id) {
-        questionRepository.findById(id);
+    public QuestionResponse getQuestionById(Long id) {
+        var question = questionRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + id));
+
+        return questionMapper.toResponse(question);
     }
 
-    public void deleteQuestionById(Long id) {
-        questionRepository.deleteById(id);
+    public Question createQuestion(InsertQuestionRequest questionRequest) {
+        var question = questionMapper.toEntity(questionRequest);
+        return questionRepository.save(question);
+    }
+
+    public Question updateQuestion(Long id, UpdateQuestionRequest questionDetails) {
+        var question = questionRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + id));
+
+        question.setContent(questionDetails.getContent());
+        question.setAnswer(questionDetails.getAnswer());
+        return questionRepository.save(question);
+    }
+
+    public void deleteQuestion(Long id) {
+        var question = questionRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + id));
+        questionRepository.delete(question);
     }
 }

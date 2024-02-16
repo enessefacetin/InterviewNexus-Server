@@ -12,9 +12,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -27,6 +28,6 @@ public class Profession extends BaseEntity {
     @OneToMany(mappedBy = "profession", cascade = CascadeType.ALL)
     private List<Interview> interviews;
 
-    @ManyToMany(mappedBy = "professions")
+    @ManyToMany(mappedBy = "professions", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Company> companies;
 }
