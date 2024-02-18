@@ -1,6 +1,5 @@
 package com.enessefacetin.interviewnexus.model.entity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import io.micrometer.common.lang.Nullable;
@@ -14,14 +13,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDate;
 
 @Data
 @SuperBuilder
@@ -54,7 +56,7 @@ public class Interview extends BaseEntity {
     @Nullable
     private String opinion;
 
-    private LocalDateTime interviewDate;
+    private LocalDate interviewDate;
 
     @Enumerated(EnumType.STRING)
     private Status interviewStatus;

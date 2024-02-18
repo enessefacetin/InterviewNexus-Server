@@ -2,6 +2,7 @@ package com.enessefacetin.interviewnexus.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.enessefacetin.interviewnexus.model.entity.Profession;
 import com.enessefacetin.interviewnexus.model.request.InsertProfessionRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateProfessionRequest;
+import com.enessefacetin.interviewnexus.model.response.ProfessionDetailResponse;
 import com.enessefacetin.interviewnexus.model.response.ProfessionResponse;
 import com.enessefacetin.interviewnexus.service.ProfessionService;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequestMapping("/api/v1/profession")
 @RequiredArgsConstructor
 @Tag(name = "Profession")
+@PreAuthorize("hasAnyAuthority('User', 'Admin')")
 public class ProfessionController {
 
     private final ProfessionService professionService;
@@ -38,7 +40,7 @@ public class ProfessionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfessionResponse> getProfessionById(@PathVariable Long id) {
+    public ResponseEntity<ProfessionDetailResponse> getProfessionById(@PathVariable Long id) {
         var professionResponse = professionService.getProfessionById(id);
         return ResponseEntity.ok().body(professionResponse);
     }

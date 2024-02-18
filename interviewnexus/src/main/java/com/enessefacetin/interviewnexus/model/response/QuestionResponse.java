@@ -16,9 +16,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuestionResponse {
     private String content;
-
     private String answer;
-
-    @Enumerated(EnumType.STRING)
-    private Status questionStatus;
 }

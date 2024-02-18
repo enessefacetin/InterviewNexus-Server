@@ -20,7 +20,6 @@ spring:
         format_sql: true
     open-in-view: false
     database: oracle
-    database-platform: org.hibernate.dialect.OracleDialect
 
 logging:
   level:

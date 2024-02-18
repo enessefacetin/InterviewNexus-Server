@@ -10,6 +10,7 @@ import com.enessefacetin.interviewnexus.model.request.UpdateQuestionRequest;
 import com.enessefacetin.interviewnexus.model.response.QuestionResponse;
 import com.enessefacetin.interviewnexus.repository.QuestionRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
 
-
+    @Transactional
     public List<QuestionResponse> getAllQuestions() {
         var industries = questionRepository.findAll();
         return industries.stream()
@@ -30,6 +31,7 @@ public class QuestionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public QuestionResponse getQuestionById(Long id) {
         var question = questionRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + id));
@@ -37,11 +39,13 @@ public class QuestionService {
         return questionMapper.toResponse(question);
     }
 
+    @Transactional
     public Question createQuestion(InsertQuestionRequest questionRequest) {
         var question = questionMapper.toEntity(questionRequest);
         return questionRepository.save(question);
     }
 
+    @Transactional
     public Question updateQuestion(Long id, UpdateQuestionRequest questionDetails) {
         var question = questionRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + id));
@@ -51,6 +55,7 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
+    @Transactional
     public void deleteQuestion(Long id) {
         var question = questionRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + id));

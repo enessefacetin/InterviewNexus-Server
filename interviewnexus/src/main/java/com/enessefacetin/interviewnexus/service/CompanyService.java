@@ -7,9 +7,11 @@ import com.enessefacetin.interviewnexus.mapper.CompanyMapper;
 import com.enessefacetin.interviewnexus.model.entity.Company;
 import com.enessefacetin.interviewnexus.model.request.InsertCompanyRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateCompanyRequest;
+import com.enessefacetin.interviewnexus.model.response.CompanyDetailResponse;
 import com.enessefacetin.interviewnexus.model.response.CompanyResponse;
 import com.enessefacetin.interviewnexus.repository.CompanyRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
 
-
+    @Transactional
     public List<CompanyResponse> getAllCompanies() {
         var industries = companyRepository.findAll();
         return industries.stream()
@@ -31,18 +33,22 @@ public class CompanyService {
                 .collect(Collectors.toList());
     }
 
-    public CompanyResponse getCompanyById(Long id) {
+    @Transactional
+    public CompanyDetailResponse getCompanyById(Long id) {
         var company = companyRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
         
-        return companyMapper.toResponse(company);
+        
+        return companyMapper.toDetailedResponse(company);
     }
 
+    @Transactional
     public Company createCompany(InsertCompanyRequest companyRequest) {
         var company = companyMapper.toEntity(companyRequest);
         return companyRepository.save(company);
     }
 
+    @Transactional
     public Company updateCompany(Long id, UpdateCompanyRequest companyDetails) {
         var company = companyRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
@@ -51,6 +57,7 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
+    @Transactional
     public void deleteCompany(Long id) {
         var company = companyRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));

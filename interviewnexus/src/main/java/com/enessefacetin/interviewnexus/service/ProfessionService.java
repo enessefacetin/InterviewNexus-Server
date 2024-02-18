@@ -7,9 +7,11 @@ import com.enessefacetin.interviewnexus.mapper.ProfessionMapper;
 import com.enessefacetin.interviewnexus.model.entity.Profession;
 import com.enessefacetin.interviewnexus.model.request.InsertProfessionRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateProfessionRequest;
+import com.enessefacetin.interviewnexus.model.response.ProfessionDetailResponse;
 import com.enessefacetin.interviewnexus.model.response.ProfessionResponse;
 import com.enessefacetin.interviewnexus.repository.ProfessionRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class ProfessionService {
     private final ProfessionMapper professionMapper;
 
 
+    @Transactional
     public List<ProfessionResponse> getAllProfessions() {
         var industries = professionRepository.findAll();
         return industries.stream()
@@ -30,18 +33,21 @@ public class ProfessionService {
                 .collect(Collectors.toList());
     }
 
-    public ProfessionResponse getProfessionById(Long id) {
+    @Transactional
+    public ProfessionDetailResponse getProfessionById(Long id) {
         var profession = professionRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Profession not found with id: " + id));
 
-        return professionMapper.toResponse(profession);
+        return professionMapper.toDetailedResponse(profession);
     }
 
+    @Transactional
     public Profession createProfession(InsertProfessionRequest professionRequest) {
         var profession = professionMapper.toEntity(professionRequest);
         return professionRepository.save(profession);
     }
 
+    @Transactional
     public Profession updateProfession(Long id, UpdateProfessionRequest professionDetails) {
         var profession = professionRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Profession not found with id: " + id));
@@ -50,6 +56,7 @@ public class ProfessionService {
         return professionRepository.save(profession);
     }
 
+    @Transactional
     public void deleteProfession(Long id) {
         var profession = professionRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Profession not found with id: " + id));

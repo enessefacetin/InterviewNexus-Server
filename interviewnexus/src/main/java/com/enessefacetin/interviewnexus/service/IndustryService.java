@@ -13,6 +13,7 @@ import com.enessefacetin.interviewnexus.model.request.UpdateIndustryRequest;
 import com.enessefacetin.interviewnexus.model.response.IndustryResponse;
 import com.enessefacetin.interviewnexus.repository.IndustryRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,6 +24,7 @@ public class IndustryService {
     private final IndustryMapper industryMapper;
 
 
+    @Transactional
     public List<IndustryResponse> getAllIndustries() {
         var industries = industryRepository.findAll();
         return industries.stream()
@@ -30,6 +32,7 @@ public class IndustryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public IndustryResponse getIndustryById(Long id) {
         var industry = industryRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Industry not found with id: " + id));
@@ -37,11 +40,13 @@ public class IndustryService {
         return industryMapper.toResponse(industry);
     }
 
+    @Transactional
     public Industry createIndustry(InsertIndustryRequest industryRequest) {
         var industry = industryMapper.toEntity(industryRequest);
         return industryRepository.save(industry);
     }
 
+    @Transactional
     public Industry updateIndustry(Long id, UpdateIndustryRequest industryDetails) {
         var industry = industryRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Industry not found with id: " + id));
@@ -50,6 +55,7 @@ public class IndustryService {
         return industryRepository.save(industry);
     }
 
+    @Transactional
     public void deleteIndustry(Long id) {
         var industry = industryRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Industry not found with id: " + id));

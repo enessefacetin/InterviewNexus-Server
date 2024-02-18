@@ -1,14 +1,15 @@
 package com.enessefacetin.interviewnexus.service;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.enessefacetin.interviewnexus.exception.EntityNotFoundException;
 import com.enessefacetin.interviewnexus.mapper.InterviewMapper;
-import com.enessefacetin.interviewnexus.model.entity.Company;
 import com.enessefacetin.interviewnexus.model.entity.Interview;
-import com.enessefacetin.interviewnexus.model.entity.Profession;
 import com.enessefacetin.interviewnexus.model.request.InsertInterviewRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateInterviewRequest;
+import com.enessefacetin.interviewnexus.model.response.InterviewDetailResponse;
 import com.enessefacetin.interviewnexus.model.response.InterviewResponse;
 import com.enessefacetin.interviewnexus.repository.CompanyRepository;
 import com.enessefacetin.interviewnexus.repository.InterviewRepository;
@@ -30,30 +31,47 @@ public class InterviewService {
     private final CompanyRepository companyRepository;
     private final ProfessionRepository professionRepository;
     private final InterviewMapper interviewMapper;
-    private final JWTService jwtService;
     private final UserRepository userRepository;
 
-
-
+    @Transactional
     public List<InterviewResponse> getAllInterviews() {
-        var industries = interviewRepository.findAll();
-        return industries.stream()
+        var interviews = interviewRepository.findAll();
+        return interviews.stream()
                 .map(interviewMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public InterviewResponse getInterviewById(Long id) {
-        var interview = interviewRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
-
-        return interviewMapper.toResponse(interview);
+    @Transactional
+    public List<InterviewResponse> getInterviewsByUserId(Long userId) {
+        var interviews = interviewRepository.findByUserId(userId);
+        return interviews.stream()
+                .map(interviewMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Interview createInterview(InsertInterviewRequest interviewRequest, String userToken) {
+    public List<InterviewResponse> getLastNInterviews(int n) {
+        var pageable = PageRequest.of(0, n);
+        return interviewRepository.findLastNInterviews(pageable)
+                                   .stream()
+                                   .map(interviewMapper::toResponse)
+                                   .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public InterviewDetailResponse getInterviewById(Long id) {
+        var interview = interviewRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
+
+        return interviewMapper.toDetailedResponse(interview);
+    }
+
+    @Transactional
+    public Interview createInterview(InsertInterviewRequest interviewRequest) {
         var interview = interviewMapper.toEntity(interviewRequest);
-        
-        var userEmail = jwtService.extractUserName(userToken);
+        var userEmail =SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //var userEmail = jwtService.extractUserName(userToken);
         var user = userRepository.findByEmail(userEmail).get();
         interview.setUser(user);
 
@@ -68,7 +86,8 @@ public class InterviewService {
         return interviewRepository.save(interview);
     }
 
-    public Interview updateInterview(Long id, UpdateInterviewRequest interviewDetails, String userToken) {
+    @Transactional
+    public Interview updateInterview(Long id, UpdateInterviewRequest interviewDetails) {
         
         var interview = interviewRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
@@ -85,7 +104,7 @@ public class InterviewService {
             interview.setCompany(company);
         }
        
-        var userEmail = jwtService.extractUserName(userToken);
+        var userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         var user = userRepository.findByEmail(userEmail).get();
 
         interview.setUser(user);
@@ -97,6 +116,7 @@ public class InterviewService {
         return interviewRepository.save(interview);
     }
 
+    @Transactional
     public void deleteInterview(Long id) {
         var interview = interviewRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));

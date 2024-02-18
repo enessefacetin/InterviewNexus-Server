@@ -11,6 +11,7 @@ import com.enessefacetin.interviewnexus.model.response.QuestionResponse;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface QuestionMapper {
+    QuestionMapper INSTANCE = org.mapstruct.factory.Mappers.getMapper(QuestionMapper.class);
 
     @Mapping(target = "questionStatus", ignore = true)
     @Mapping(target = "interview", ignore = true)

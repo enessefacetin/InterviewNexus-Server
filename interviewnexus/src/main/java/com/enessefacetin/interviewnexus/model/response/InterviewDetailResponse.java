@@ -5,16 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InterviewResponse {
-    private long id;
+public class InterviewDetailResponse {
     private String companyName;
     private String professionName;
     private String type;
     private int score;
     private String opinion;
     private String interviewDate;
+    private List<QuestionResponse> questions;
 }

@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -22,6 +22,6 @@ public class UpdateInterviewRequest {
     private InterviewType type; 
     private int score;
     private String opinion;
-    private LocalDateTime interviewDate;
+    private LocalDate interviewDate;
     
 }
