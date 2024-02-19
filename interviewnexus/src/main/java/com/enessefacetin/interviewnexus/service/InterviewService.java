@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.enessefacetin.interviewnexus.exception.EntityNotFoundException;
 import com.enessefacetin.interviewnexus.mapper.InterviewMapper;
 import com.enessefacetin.interviewnexus.model.entity.Interview;
+import com.enessefacetin.interviewnexus.model.entity.Status;
+import com.enessefacetin.interviewnexus.model.entity.User;
 import com.enessefacetin.interviewnexus.model.request.InsertInterviewRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateInterviewRequest;
 import com.enessefacetin.interviewnexus.model.response.InterviewDetailResponse;
@@ -21,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,9 @@ public class InterviewService {
     }
 
     @Transactional
-    public List<InterviewResponse> getInterviewsByUserId(Long userId) {
+    public List<InterviewResponse> getInterviewsByUserId() {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var userId = user.getId();
         var interviews = interviewRepository.findByUserId(userId);
         return interviews.stream()
                 .map(interviewMapper::toResponse)
@@ -52,7 +56,7 @@ public class InterviewService {
     @Transactional
     public List<InterviewResponse> getLastNInterviews(int n) {
         var pageable = PageRequest.of(0, n);
-        return interviewRepository.findLastNInterviews(pageable)
+        return interviewRepository.findLastNInterviewsByStatus(Status.APPROVED, Status.APPROVED, pageable)
                                    .stream()
                                    .map(interviewMapper::toResponse)
                                    .collect(Collectors.toList());
@@ -60,9 +64,17 @@ public class InterviewService {
 
     @Transactional
     public InterviewDetailResponse getInterviewById(Long id) {
+        var interview = interviewRepository.findInterviewDetailWithApprovedQuestions(id, Status.APPROVED)
+        .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
+        
+        return interviewMapper.toDetailedResponse(interview);
+    }
+
+    @Transactional
+    public InterviewDetailResponse getUserInterviewById(Long id) {
         var interview = interviewRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
-
+        
         return interviewMapper.toDetailedResponse(interview);
     }
 
@@ -121,5 +133,35 @@ public class InterviewService {
         var interview = interviewRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
         interviewRepository.delete(interview);
+    }
+
+    @Transactional
+    public List<InterviewDetailResponse> getPendingInterviews() {
+        List<Interview> pendingInterviews = interviewRepository.findByStatus(Status.PENDING);
+        return pendingInterviews.stream()
+            .map(interviewMapper::toDetailedResponse)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void approveInterview(Long id) {
+        Interview interview = interviewRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
+        interview.setInterviewStatus(Status.APPROVED);
+        for (var question : interview.getQuestions()) {
+            question.setQuestionStatus(Status.APPROVED);
+        }
+        interviewRepository.saveAndFlush(interview);
+    }
+    
+    @Transactional
+    public void rejectInterview(Long id) {
+        Interview interview = interviewRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Interview not found with id: " + id));
+        interview.setInterviewStatus(Status.REJECTED);
+        for (var question : interview.getQuestions()) {
+            question.setQuestionStatus(Status.REJECTED);
+        }
+        interviewRepository.saveAndFlush(interview);
     }
 }

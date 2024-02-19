@@ -17,4 +17,5 @@ import lombok.NoArgsConstructor;
 public class QuestionResponse {
     private String content;
     private String answer;
+    private String status;
 }

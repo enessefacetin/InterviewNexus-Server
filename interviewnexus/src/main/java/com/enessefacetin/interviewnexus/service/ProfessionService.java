@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 
 import com.enessefacetin.interviewnexus.exception.EntityNotFoundException;
 import com.enessefacetin.interviewnexus.mapper.ProfessionMapper;
+import com.enessefacetin.interviewnexus.model.entity.Interview;
 import com.enessefacetin.interviewnexus.model.entity.Profession;
+import com.enessefacetin.interviewnexus.model.entity.Status;
 import com.enessefacetin.interviewnexus.model.request.InsertProfessionRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateProfessionRequest;
 import com.enessefacetin.interviewnexus.model.response.ProfessionDetailResponse;
@@ -27,7 +29,7 @@ public class ProfessionService {
 
     @Transactional
     public List<ProfessionResponse> getAllProfessions() {
-        var industries = professionRepository.findAll();
+        var industries = professionRepository.findProfessionsWithApprovedInterviewAndQuestion(Status.APPROVED, Status.APPROVED);
         return industries.stream()
                 .map(professionMapper::toResponse)
                 .collect(Collectors.toList());
@@ -38,6 +40,11 @@ public class ProfessionService {
         var profession = professionRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Profession not found with id: " + id));
 
+        List<Interview> filteredInterviews = profession.getInterviews().stream()
+            .filter(i -> i.getInterviewStatus() == Status.APPROVED)
+            .filter(i -> i.getQuestions().stream().anyMatch(q -> q.getQuestionStatus() == Status.APPROVED))
+            .collect(Collectors.toList());
+        profession.setInterviews(filteredInterviews);
         return professionMapper.toDetailedResponse(profession);
     }
 

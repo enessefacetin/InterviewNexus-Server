@@ -3,6 +3,8 @@ package com.enessefacetin.interviewnexus.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.enessefacetin.interviewnexus.model.entity.Interview;
+import com.enessefacetin.interviewnexus.model.entity.User;
 import com.enessefacetin.interviewnexus.model.request.InsertInterviewRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateInterviewRequest;
 import com.enessefacetin.interviewnexus.model.response.InterviewDetailResponse;
@@ -41,6 +44,18 @@ public class InterviewController {
     @GetMapping("/{id}")
     public ResponseEntity<InterviewDetailResponse> getInterviewById(@PathVariable Long id) {
         var interviewResponse = interviewService.getInterviewById(id);
+        return ResponseEntity.ok().body(interviewResponse);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<InterviewDetailResponse> getUserInterviewById(@PathVariable Long id) {
+        var interviewResponse = interviewService.getUserInterviewById(id);
+        return ResponseEntity.ok().body(interviewResponse);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<InterviewResponse>> getUserById() {
+        var interviewResponse = interviewService.getInterviewsByUserId();
         return ResponseEntity.ok().body(interviewResponse);
     }
 

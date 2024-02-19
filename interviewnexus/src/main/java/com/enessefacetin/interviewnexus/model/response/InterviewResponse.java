@@ -17,4 +17,5 @@ public class InterviewResponse {
     private int score;
     private String opinion;
     private String interviewDate;
+    private String status;
 }

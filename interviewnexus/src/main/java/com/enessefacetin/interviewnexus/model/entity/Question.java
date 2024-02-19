@@ -1,5 +1,7 @@
 package com.enessefacetin.interviewnexus.model.entity;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,5 +46,14 @@ public class Question extends BaseEntity {
     protected void onCreate() {
         super.onCreate();
         this.questionStatus = Status.PENDING;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        super.onUpdate();
+        var isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Admin"));
+        if (!isAdmin) {
+            this.questionStatus = Status.PENDING;
+        }
     }
 }

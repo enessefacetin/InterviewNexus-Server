@@ -21,6 +21,7 @@ public interface QuestionMapper {
     @Mapping(target = "interview", ignore = true)
     Question toEntity(UpdateQuestionRequest request);
 
+    @Mapping(source = "questionStatus", target = "status")
     QuestionResponse toResponse(Question question);
 
 }

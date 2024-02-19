@@ -44,10 +44,12 @@ public interface InterviewMapper {
 
     @Mapping(source = "company.name", target = "companyName")
     @Mapping(source = "profession.name", target = "professionName")
+    @Mapping(source = "interviewStatus", target = "status")
     InterviewResponse toResponse(Interview interview);
 
     @Mapping(source = "company.name", target = "companyName")
     @Mapping(source = "profession.name", target = "professionName")
+    @Mapping(source = "interviewStatus", target = "status")
     InterviewDetailResponse toDetailedResponse(Interview interview);
 
     default String mapLocalDateToString(LocalDate localDate) {

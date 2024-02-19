@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.enessefacetin.interviewnexus.exception.EntityNotFoundException;
 import com.enessefacetin.interviewnexus.mapper.CompanyMapper;
 import com.enessefacetin.interviewnexus.model.entity.Company;
+import com.enessefacetin.interviewnexus.model.entity.Interview;
+import com.enessefacetin.interviewnexus.model.entity.Status;
 import com.enessefacetin.interviewnexus.model.request.InsertCompanyRequest;
 import com.enessefacetin.interviewnexus.model.request.UpdateCompanyRequest;
 import com.enessefacetin.interviewnexus.model.response.CompanyDetailResponse;
@@ -27,8 +29,8 @@ public class CompanyService {
 
     @Transactional
     public List<CompanyResponse> getAllCompanies() {
-        var industries = companyRepository.findAll();
-        return industries.stream()
+        var companies = companyRepository.findCompaniesWithApprovedInterviewAndQuestion(Status.APPROVED, Status.APPROVED);
+        return companies.stream()
                 .map(companyMapper::toResponse)
                 .collect(Collectors.toList());
     }
@@ -38,7 +40,11 @@ public class CompanyService {
         var company = companyRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
         
-        
+        List<Interview> filteredInterviews = company.getInterviews().stream()
+            .filter(i -> i.getInterviewStatus() == Status.APPROVED)
+            .filter(i -> i.getQuestions().stream().anyMatch(q -> q.getQuestionStatus() == Status.APPROVED))
+            .collect(Collectors.toList());
+        company.setInterviews(filteredInterviews);
         return companyMapper.toDetailedResponse(company);
     }
 

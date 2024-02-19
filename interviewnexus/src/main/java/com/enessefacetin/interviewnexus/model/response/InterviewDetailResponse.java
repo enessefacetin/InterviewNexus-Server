@@ -12,11 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InterviewDetailResponse {
+    private long id;
     private String companyName;
     private String professionName;
     private String type;
     private int score;
     private String opinion;
     private String interviewDate;
+    private String status;
     private List<QuestionResponse> questions;
 }
